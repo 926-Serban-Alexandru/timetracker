@@ -1,0 +1,23 @@
+<div id="weekly_report">
+  <h2 class="mb-3">Weekly Report</h2>
+  <table class="table table-bordered w-75 mx-auto">
+    <thead class="thead-light">
+      <tr>
+        <th>Week Starting</th>
+        <th>Total Distance (km)</th>
+        <th>Avg Speed (km/min)</th>
+      </tr>
+    </thead>
+    <tbody>
+    <% weekly_report.each do |record| %>
+  <tr>
+    <td><%= record["week_start"] %></td>
+    <td><%= number_with_precision(record["total_distance"], precision: 2) %></td>
+    <td><%= number_with_precision(record["avg_speed"], precision: 4) %></td>
+  </tr>
+<% end %>
+
+
+    </tbody>
+  </table>
+</div>

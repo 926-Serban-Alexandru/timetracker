@@ -1,0 +1,84 @@
+<div class="d-flex flex-column justify-content-center align-items-center text-center" style="height: 80vh;">
+  <%= image_tag "logo-no-background.png", alt: "Logo", class: "logo mb-4 fade-in-logo" %>
+
+  <h1 class="display-4 font-weight-bold mb-4 fade-in">Welcome to TIMETRACKER</h1>
+
+  <%= link_to (current_user ? time_entries_path : new_user_registration_path), 
+      class: "btn btn-dark btn-lg start-button slide-up d-flex align-items-center justify-content-center" do %>
+    <span class="mr-2">Let's Get Started</span>
+    <i class="fas fa-arrow-right arrow-icon"></i>
+  <% end %>
+</div>
+
+<style>
+  /* Logo styling */
+  .logo {
+    max-width: 200px; /* Limits size */
+    width: 50%; /* Responsive scaling */
+    height: auto;
+  }
+
+  /* Logo fade-in */
+  .fade-in-logo {
+    opacity: 0;
+    animation: fadeInLogoAnimation 1s forwards;
+  }
+
+  /* Title fade-in */
+  .fade-in {
+    opacity: 0;
+    animation: fadeInAnimation 1s forwards;
+  }
+
+  /* Button slide-up */
+  .slide-up {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUpAnimation 1s 0.5s forwards;
+  }
+
+  /* Animations */
+  @keyframes fadeInAnimation {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeInLogoAnimation {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUpAnimation {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Button hover effect */
+  .start-button {
+    background-color: #343a40;
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .start-button:hover {
+    background-color: #23272b;
+    transform: scale(1.05);
+  }
+
+  /* Arrow movement */
+  .arrow-icon {
+    transition: transform 0.3s;
+  }
+
+  .start-button:hover .arrow-icon {
+    transform: translateX(5px);
+  }
+</style>
+
+<!-- Make sure you have FontAwesome for the arrow -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+

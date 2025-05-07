@@ -1,0 +1,35 @@
+<div class="container py-5 text-center">
+  <h1 class="display-4 mb-4">All Users</h1>
+
+  <!-- NEW USER FORM -->
+  <div class="mb-5 mx-auto" style="max-width: 500px;">
+    <%= render "form", user: @user %>
+  </div>
+
+  <!-- USERS TABLE -->
+  <div class="table-responsive mb-4" style="max-width: 1000px; margin: 0 auto;">
+    <table class="table table-striped">
+      <thead class="thead-dark">
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="users">
+        <% @users.each do |user| %>
+          <% if @editing_user&.id == user.id %>
+            <%= render "edit_row", user: @editing_user %>
+          <% else %>
+            <%= render "row", user: user %>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
+
+

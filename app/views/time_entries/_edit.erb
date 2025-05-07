@@ -1,0 +1,9 @@
+<turbo-frame id="<%= dom_id(@time_entry) %>">
+  <tr class="position-relative">
+    <td colspan="5">
+      <div class="edit-form-container bg-white border p-3 shadow w-100" style="z-index: 1000;">
+        <%= render "form", time_entry: @time_entry %>
+      </div>
+    </td>
+  </tr>
+</turbo-frame>

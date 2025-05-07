@@ -1,0 +1,33 @@
+<tr id="<%= dom_id(time_entry) %>">
+  <td colspan="5">
+    <div class="edit-form-container bg-light p-3 rounded">
+      <%= form_with(model: time_entry, class: "row g-3") do |f| %>
+        <div class="col-md-4">
+          <%= f.label :date, class: "form-label" %>
+          <%= f.date_field :date, class: "form-control" %>
+        </div>
+        
+        <div class="col-md-3">
+          <%= f.label :distance, "Distance (km)", class: "form-label" %>
+          <%= f.number_field :distance, step: "0.01", class: "form-control no-spinner" %>
+        </div>
+        
+        <div class="col-md-3">
+          <%= f.label :duration, "Duration (min)", class: "form-label" %>
+          <%= f.number_field :duration, step: "0.01", class: "form-control no-spinner" %>
+        </div>
+        
+        <div class="col-md-3 d-flex align-items-end gap-2">
+  <%= f.submit "Update", class: "btn btn-sm update-btn me-2" %>
+
+  <%= link_to "Cancel", time_entry_path(time_entry), 
+      data: { turbo_stream: true }, 
+      class: "btn btn-sm btn-outline-secondary cancel-btn" %>
+
+
+</div>
+
+      <% end %>
+    </div>
+  </td>
+</tr>

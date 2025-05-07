@@ -1,0 +1,49 @@
+<div class="container py-5 text-center">
+  <h1 class="display-4 mb-4">My Time Entries</h1>
+
+  <!-- Filter Form -->
+  <div class="mb-4">
+    <%= form_with url: time_entries_path, method: :get, local: true, class: "row justify-content-center" do |form| %>
+      <div class="col-md-3">
+        <%= form.label :from, "From" %>
+        <%= form.date_field :from, class: "form-control" %>
+      </div>
+      <div class="col-md-3">
+        <%= form.label :to, "To" %>
+        <%= form.date_field :to, class: "form-control" %>
+      </div>
+      <div class="col-md-2 align-self-end">
+        <%= form.submit "Filter", class: "btn btn-dark btn-block mt-2" %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- New Entry Form - Make sure this has a unique ID -->
+  <div id="new_time_entry_form" class="mb-5 mx-auto" style="max-width: 500px;">
+    <%= render "form", time_entry: @time_entry %>
+  </div>
+
+  <!-- Time Entries Table -->
+  <div class="table-responsive mb-4" style="max-width: 1000px; margin: 0 auto;">
+  <table class="table table-striped">
+    <thead class="thead-dark">
+      <tr>
+        <th>Date</th>
+        <th>Distance (km)</th>
+        <th>Duration (min)</th>
+        <th>Avg Speed (km/min)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="time_entries">
+      <%= render partial: "entry", collection: @time_entries, as: :entry %>
+    </tbody>
+  </table>
+</div>
+
+
+  <!-- Weekly Report -->
+  <% unless params[:user_id].present? %>
+  <%= render partial: "weekly_report", locals: { weekly_report: @weekly_report } %>
+   <% end %>
+</div>

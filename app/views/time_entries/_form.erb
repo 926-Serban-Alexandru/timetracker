@@ -1,0 +1,23 @@
+<%= form_with(model: time_entry, id: "time_entry_form", data: { controller: "form-reset" }) do |f| %>
+<div class="row g-3" style="min-height: 120px;">
+  <div class="col-md-4">
+    <%= f.label :date, class: "form-label" %>
+    <%= f.date_field :date, class: "form-control", required: true %>
+  </div>
+  
+  <div class="col-md-4">
+    <%= f.label :distance, "Distance (km)", class: "form-label" %>
+    <%= f.number_field :distance, step: "0.01", class: "form-control no-spinner", required: true %>
+  </div>
+  
+  <div class="col-md-4">
+    <%= f.label :duration, "Duration (min)", class: "form-label" %>
+    <%= f.number_field :duration, step: "0.01", class: "form-control no-spinner", required: true %>
+  </div>
+  
+  <div class="col-12 mt-3">
+    <%= f.submit time_entry.new_record? ? "Log Time" : "Update", 
+                class: "btn btn-dark w-100" %>
+  </div>
+</div>
+<% end %>
