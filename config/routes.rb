@@ -14,6 +14,14 @@ Rails.application.routes.draw do
    # Defines the root path route ("/")
    root "home#start"
 
+   namespace :api do
+    namespace :v1 do
+      post "auth/login", to: "authentication#login"
+      delete "auth/logout", to: "authentication#logout"
+
+      resources :users, only: [ :index, :create, :update, :destroy ]
+      resources :time_entries, only: [ :index, :create, :update, :destroy, :show ] end end
+
    resources :users, only: [ :index,  :update, :destroy ] do
     collection do
       post :manual_create
