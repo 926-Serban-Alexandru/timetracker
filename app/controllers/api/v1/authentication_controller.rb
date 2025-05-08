@@ -1,7 +1,7 @@
 module Api
   module V1
     class AuthenticationController < BaseController
-      skip_before_action :authenticate_user_from_token!
+      skip_before_action :authenticate_user_from_token!, only: [ :login ]
 
       def login
         user = User.find_by(email: params[:email])
@@ -15,9 +15,16 @@ module Api
       end
 
       def logout
-        current_user.invalidate_token
-        current_user.save!
-        head :no_content
+        auth_token = request.headers["Authorization"]&.split(" ")&.last
+        user = User.find_by(authentication_token: auth_token)
+
+        if user
+          user.invalidate_token
+          user.save!
+          head :no_content
+        else
+          render json: { error: "Invalid token" }, status: :unauthorized
+        end
       end
     end
   end
