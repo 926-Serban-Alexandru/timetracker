@@ -3,6 +3,7 @@ class TimeEntriesController < ApplicationController
   before_action :set_time_entry, only: [ :edit, :update, :destroy ]
   include ActionView::RecordIdentifier
 
+
   def index
     @from = params[:from]
     @to = params[:to]
