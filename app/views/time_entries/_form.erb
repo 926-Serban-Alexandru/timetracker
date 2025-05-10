@@ -1,4 +1,7 @@
 <%= form_with(model: time_entry, id: "time_entry_form", data: { controller: "form-reset" }) do |f| %>
+<% if params[:user_id].present? && current_user.admin? %>
+    <%= hidden_field_tag :user_id, params[:user_id] %>
+  <% end %>
 <div class="row g-3" style="min-height: 120px;">
   <div class="col-md-4">
     <%= f.label :date, class: "form-label" %>

@@ -4,12 +4,13 @@ module Api
       before_action :set_time_entry, only: [ :show, :update, :destroy ]
 
       def index
-        if params[:user_id].present? && (current_user.admin? || current_user.manager?)
-          @time_entries = User.find(params[:user_id]).time_entries.order(date: :desc)
+        @target_user = if params[:user_id].present? && current_user.admin?
+                         User.find(params[:user_id])
         else
-          @time_entries = current_user.time_entries.order(date: :desc)
+                         current_user
         end
 
+        @time_entries = @target_user.time_entries.order(date: :desc)
         @time_entries = @time_entries.where("date >= ?", params[:from]) if params[:from].present?
         @time_entries = @time_entries.where("date <= ?", params[:to]) if params[:to].present?
 
@@ -21,7 +22,14 @@ module Api
       end
 
       def create
-        @time_entry = current_user.time_entries.build(time_entry_params)
+        @target_user = if params[:user_id].present? && current_user.admin?
+                         User.find(params[:user_id])
+        else
+                         current_user
+        end
+
+        @time_entry = @target_user.time_entries.build(time_entry_params)
+
         if @time_entry.save
           render json: @time_entry.as_json(methods: [ :average_speed ]), status: :created
         else
@@ -45,7 +53,7 @@ module Api
       private
 
       def set_time_entry
-        @time_entry = if current_user.admin? || current_user.manager?
+        @time_entry = if current_user.admin?
                         TimeEntry.find(params[:id])
         else
                         current_user.time_entries.find(params[:id])

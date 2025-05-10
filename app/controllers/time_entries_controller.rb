@@ -7,15 +7,21 @@ class TimeEntriesController < ApplicationController
     @from = params[:from]
     @to = params[:to]
     @time_entry = TimeEntry.new
+    # Set target user - admin can view others, regular users only see their own
+    @target_user = if params[:user_id].present? && current_user.admin?
+                     User.find(params[:user_id])
+    else
+                     current_user
+    end
     if params[:user_id].present?
       unless current_user.admin?
         redirect_to time_entries_path, alert: "You don't have permission to view other users' time entries."
         return
       end
-      @time_entries = User.find(params[:user_id]).time_entries.order(date: :desc)
-    else
-    @time_entries = current_user.time_entries.order(date: :desc)
+
     end
+    @time_entries = @target_user.time_entries.order(date: :desc)
+
     @time_entries = @time_entries.where("date >= ?", @from) if @from.present?
     @time_entries = @time_entries.where("date <= ?", @to) if @to.present?
 
@@ -23,7 +29,14 @@ class TimeEntriesController < ApplicationController
   end
 
   def create
-    @time_entry = current_user.time_entries.build(time_entry_params)
+    # Set the user for the new entry - admin can create for others
+    if params[:user_id].present? && current_user.admin?
+      @target_user = User.find(params[:user_id])
+    else
+      @target_user = current_user
+    end
+
+    @time_entry = @target_user.time_entries.build(time_entry_params)
 
     respond_to do |format|
       if @time_entry.save
@@ -31,10 +44,10 @@ class TimeEntriesController < ApplicationController
           render turbo_stream: [
             turbo_stream.append("time_entries", partial: "entry", locals: { entry: @time_entry }),
             turbo_stream.replace("weekly_report", partial: "weekly_report",
-                                 locals: { weekly_report: TimeEntry.weekly_stats(current_user) })
+                             locals: { weekly_report: TimeEntry.weekly_stats(@target_user) })
           ]
         end
-        format.html { redirect_to time_entries_path, notice: "Time entry logged." }
+        format.html { redirect_to time_entries_path(user_id: @target_user.id), notice: "Time entry logged." }
       else
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(
@@ -111,7 +124,12 @@ class TimeEntriesController < ApplicationController
   private
 
   def set_time_entry
-    @time_entry = current_user.time_entries.find(params[:id])
+    # Admins can access any entry, regular users only their own
+    @time_entry = if current_user.admin?
+                   TimeEntry.find(params[:id])
+    else
+                   current_user.time_entries.find(params[:id])
+    end
   end
 
   def time_entry_params
