@@ -50,6 +50,12 @@ module Api
         head :no_content
       end
 
+      def weekly_stats
+        stats = TimeEntry.weekly_stats(current_user)
+
+        render json: stats.as_json
+      end
+
       private
 
       def set_time_entry

@@ -1,5 +1,9 @@
 <div class="container py-5 text-center">
+  <% if @target_user == current_user %>
   <h1 class="display-4 mb-4">My Time Entries</h1>
+  <% else %>
+  <h1 class="display-4 mb-4"><%= @target_user.name %>'s Time Entries</h1>
+  <% end %>
 
   <!-- Filter Form -->
   <div class="mb-4">

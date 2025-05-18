@@ -17,10 +17,16 @@ Rails.application.routes.draw do
    namespace :api do
     namespace :v1 do
       post "auth/login", to: "authentication#login"
+      post "auth/signup", to: "authentication#signup"
       delete "auth/logout", to: "authentication#logout"
 
       resources :users, only: [ :index, :create, :update, :destroy ]
-      resources :time_entries, only: [ :index, :create, :update, :destroy, :show ] end end
+      resources :time_entries, only: [ :index, :create, :update, :destroy, :show ] do
+      collection do
+        get :weekly_stats
+      end
+    end
+  end end
 
    resources :users, only: [ :index,  :update, :destroy ] do
     collection do

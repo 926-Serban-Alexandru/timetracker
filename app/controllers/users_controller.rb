@@ -5,7 +5,11 @@ class UsersController < ApplicationController
   include ActionView::RecordIdentifier
 
   def index
-    @users = User.order(:name)
+    @users = if current_user.manager?
+             User.where.not(role: :admin).order(:name)
+    else
+             User.order(:name)
+    end
     @user = User.new
     @editing_user = User.find(params[:edit_id]) if params[:edit_id]
   end
