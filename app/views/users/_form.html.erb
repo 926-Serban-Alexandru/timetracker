@@ -1,5 +1,5 @@
-<%= form_with model: user, url: manual_create_users_path, method: :post do |f| %>
-  <div id="user_form">
+<div id="user_form">
+  <%= form_with model: user, url: manual_create_users_path, method: :post do |f| %>
     <% if user.errors.any? %>
       <div class="alert alert-danger">
         <ul>
@@ -10,28 +10,28 @@
       </div>
     <% end %>
 
-  <div class="mb-3">
-    <%= f.label :name %>
-    <%= f.text_field :name, class: "form-control" %>
-  </div>
+    <div class="mb-3">
+      <%= f.label :name %>
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
 
-  <div class="mb-3">
-    <%= f.label :email %>
-    <%= f.email_field :email, class: "form-control" %>
-  </div>
+    <div class="mb-3">
+      <%= f.label :email %>
+      <%= f.email_field :email, class: "form-control" %>
+    </div>
 
-  <div class="mb-3">
-    <%= f.label :password %>
-    <%= f.password_field :password, class: "form-control" %>
-  </div>
+    <div class="mb-3">
+      <%= f.label :password %>
+      <%= f.password_field :password, class: "form-control" %>
+    </div>
 
-  <div class="mb-3">
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation, class: "form-control" %>
-  </div>
+    <div class="mb-3">
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, class: "form-control" %>
+    </div>
 
-  <div>
-    <%= f.submit "Create User", class: "btn btn-dark w-100" %>
-  </div>
-<% end %>
-
+    <div>
+      <%= f.submit "Create User", class: "btn btn-dark w-100" %>
+    </div>
+  <% end %>
+</div>
