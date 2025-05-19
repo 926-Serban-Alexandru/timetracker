@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     end
   end end
 
-   resources :users, only: [ :index,  :update, :destroy ] do
+   resources :users, only: [ :index,  :update, :destroy, :edit ] do
     collection do
       post :manual_create
     end

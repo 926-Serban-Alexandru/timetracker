@@ -1,0 +1,7 @@
+<%= turbo_stream.prepend "users" do %>
+  <%= render "row", user: @user %>
+<% end %>
+
+<%= turbo_stream.replace "user_form" do %>
+  <%= render "form", user: User.new %>
+<% end %>

@@ -6,9 +6,9 @@ class UsersController < ApplicationController
 
   def index
     @users = if current_user.manager?
-             User.where.not(role: :admin).order(:name)
+               User.where.not(role: :admin).order(:name)
     else
-             User.order(:name)
+               User.order(:name)
     end
     @user = User.new
     @editing_user = User.find(params[:edit_id]) if params[:edit_id]
@@ -17,27 +17,63 @@ class UsersController < ApplicationController
   def manual_create
     @user = User.new(user_params)
 
-    if @user.save
-      redirect_to users_path, notice: "User created."
-    else
-      @users = User.order(:name)
-      render :index, status: :unprocessable_entity
+    respond_to do |format|
+      if @user.save
+        format.turbo_stream
+        format.html { redirect_to users_path, notice: "User created." }
+      else
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("user_form", partial: "form", locals: { user: @user }) }
+        format.html do
+          @users = User.order(:name)
+          render :index, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def update
-    if @user.update(user_params)
-      redirect_to users_path, notice: "User updated."
-    else
-      @users = User.order(:name)
-      @editing_user = @user
-      render :index, status: :unprocessable_entity
+    respond_to do |format|
+      if @user.update(user_params)
+        format.turbo_stream
+        format.html { redirect_to users_path, notice: "User updated." }
+      else
+        format.turbo_stream { render turbo_stream: turbo_stream.replace(dom_id(@user), partial: "edit_row", locals: { user: @user }) }
+        format.html do
+          @users = User.order(:name)
+          @editing_user = @user
+          render :index, status: :unprocessable_entity
+        end
+      end
     end
   end
 
   def destroy
     @user.destroy
-    redirect_to users_path, notice: "User deleted."
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(@user) }
+      format.html { redirect_to users_path, notice: "User deleted." }
+    end
+  end
+
+  def edit
+  @user = User.find(params[:id])
+  respond_to do |format|
+    format.html { redirect_to users_path(edit_id: @user.id) } # Fallback
+    format.turbo_stream do
+      render turbo_stream: [
+        turbo_stream.replace(
+          dom_id(@user),
+          partial: "edit_row",
+          locals: { user: @user }
+        ),
+        turbo_stream.replace(
+          "user_form",
+          partial: "form",
+          locals: { user: User.new }
+        )
+      ]
+    end
+  end
   end
 
   private

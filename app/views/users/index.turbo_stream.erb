@@ -1,0 +1,11 @@
+<%= turbo_stream.replace "users" do %>
+  <tbody id="users">
+    <% @users.each do |user| %>
+      <% if @editing_user&.id == user.id %>
+        <%= render "edit_row", user: @editing_user %>
+      <% else %>
+        <%= render "row", user: user %>
+      <% end %>
+    <% end %>
+  </tbody>
+<% end %>

@@ -1,0 +1,7 @@
+<%= turbo_stream.replace dom_id(@user) do %>
+  <%= render "edit_row", user: @user %>
+<% end %>
+
+<%= turbo_stream.replace "user_form" do %>
+  <%= render "form", user: User.new %>
+<% end %>
