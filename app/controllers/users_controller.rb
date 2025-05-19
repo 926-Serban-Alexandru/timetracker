@@ -22,7 +22,7 @@ class UsersController < ApplicationController
         format.turbo_stream
         format.html { redirect_to users_path, notice: "User created." }
       else
-        format.turbo_stream { render turbo_stream: turbo_stream.replace("user_form", partial: "form", locals: { user: @user }) }
+         render turbo_stream: turbo_stream.replace("user_form", partial: "form", locals: { user: @user })
         format.html do
           @users = User.order(:name)
           render :index, status: :unprocessable_entity
