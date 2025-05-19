@@ -1,0 +1,7 @@
+<%= turbo_stream.replace "time_entries_list" do %>
+  <%= render partial: "entry", collection: @time_entries, as: :entry %>
+<% end %>
+
+<%= turbo_stream.replace "weekly_report" do %>
+  <%= render partial: "weekly_report", locals: { weekly_report: @weekly_report } %>
+<% end %>

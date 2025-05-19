@@ -5,28 +5,36 @@ class TimeEntriesController < ApplicationController
 
 
   def index
-    @from = params[:from]
-    @to = params[:to]
-    @time_entry = TimeEntry.new
-    # Set target user - admin can view others, regular users only see their own
-    @target_user = if params[:user_id].present? && current_user.admin?
-                     User.find(params[:user_id])
-    else
-                     current_user
+  @from = params[:from]
+  @to = params[:to]
+  @time_entry = TimeEntry.new
+
+  # Set target user
+  @target_user = if params[:user_id].present? && current_user.admin?
+                   User.find(params[:user_id])
+  else
+                   current_user
+  end
+
+  if params[:user_id].present? && !current_user.admin?
+    redirect_to time_entries_path, alert: "You don't have permission to view other users' time entries."
+    return
+  end
+
+  @time_entries = @target_user.time_entries.order(date: :desc)
+  @time_entries = @time_entries.where("date >= ?", @from) if @from.present?
+  @time_entries = @time_entries.where("date <= ?", @to) if @to.present?
+  @weekly_report = TimeEntry.weekly_stats(current_user)
+
+  respond_to do |format|
+    format.html
+    format.turbo_stream do
+      render turbo_stream: [
+        turbo_stream.replace("time_entries", partial: "entry", collection: @time_entries, as: :entry),
+        turbo_stream.replace("weekly_report", partial: "weekly_report", locals: { weekly_report: @weekly_report })
+      ]
     end
-    if params[:user_id].present?
-      unless current_user.admin?
-        redirect_to time_entries_path, alert: "You don't have permission to view other users' time entries."
-        return
-      end
-
-    end
-    @time_entries = @target_user.time_entries.order(date: :desc)
-
-    @time_entries = @time_entries.where("date >= ?", @from) if @from.present?
-    @time_entries = @time_entries.where("date <= ?", @to) if @to.present?
-
-    @weekly_report = TimeEntry.weekly_stats(current_user)
+  end
   end
 
   def create
@@ -107,7 +115,11 @@ class TimeEntriesController < ApplicationController
   end
 
   def show
-    @time_entry = current_user.time_entries.find(params[:id])
+    @time_entry = if current_user.admin?
+                 TimeEntry.find(params[:id])
+    else
+                 current_user.time_entries.find(params[:id])
+    end
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.replace(
