@@ -10,6 +10,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+def authorize_manager_or_adminAPI!
+  unless current_user.manager? || current_user.admin?
+    render json: { error: "Unauthorized" }, status: :unauthorized
+  end
+end
+
+
   protected
 
   def configure_permitted_parameters

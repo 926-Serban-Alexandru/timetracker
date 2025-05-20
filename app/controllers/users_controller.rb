@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
-  before_action :authorize_manager_or_admin!, only: [ :index ]
+  before_action :authorize_manager_or_admin!
   before_action :set_user, only: [ :update, :destroy ]
   include ActionView::RecordIdentifier
 
